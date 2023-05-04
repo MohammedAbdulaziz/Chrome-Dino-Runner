@@ -30,17 +30,6 @@ DUCKING = [
     pygame.image.load(os.path.join("assets/Dino", "DinoDuck2.png")),
 ]
 
-SMALL_CACTUS = [
-    pygame.image.load(os.path.join("assets/Cactus", "SmallCactus1.png")),
-    pygame.image.load(os.path.join("assets/Cactus", "SmallCactus2.png")),
-    pygame.image.load(os.path.join("assets/Cactus", "SmallCactus3.png")),
-]
-LARGE_CACTUS = [
-    pygame.image.load(os.path.join("assets/Cactus", "LargeCactus1.png")),
-    pygame.image.load(os.path.join("assets/Cactus", "LargeCactus2.png")),
-    pygame.image.load(os.path.join("assets/Cactus", "LargeCactus3.png")),
-]
-
 BIRD = [
     pygame.image.load(os.path.join("assets/Bird", "Bird1.png")),
     pygame.image.load(os.path.join("assets/Bird", "Bird2.png")),
@@ -50,7 +39,8 @@ CLOUD = pygame.image.load(os.path.join("assets/Other", "Cloud.png"))
 
 BG = pygame.image.load(os.path.join("assets/Other", "Track.png"))
 
-FONT_COLOR=(0,0,0)
+FONT_COLOR = (0, 0, 0)
+
 
 class Dinosaur:
 
@@ -207,15 +197,16 @@ def main():
     def score():
         global points, game_speed
         points += 1
-        if points % 100 == 0:
-            game_speed += 1
+        # if points % 100 == 0:
+        #     game_speed += 1
         current_time = datetime.datetime.now().hour
         with open("score.txt", "r") as f:
-            score_ints = [int(x) for x in f.read().split()]  
+            score_ints = [int(x) for x in f.read().split()]
             highscore = max(score_ints)
             if points > highscore:
-                highscore=points 
-            text = font.render("High Score: "+ str(highscore) + "  Points: " + str(points), True, FONT_COLOR)
+                highscore = points
+            text = font.render("High Score: " + str(highscore) +
+                               "  Points: " + str(points), True, FONT_COLOR)
         textRect = text.get_rect()
         textRect.center = (900, 40)
         SCREEN.blit(text, textRect)
@@ -239,9 +230,10 @@ def main():
         nonlocal pause
         pause = True
         font = pygame.font.Font("freesansbold.ttf", 30)
-        text = font.render("Game Paused, Press 'u' to Unpause", True, FONT_COLOR)
+        text = font.render(
+            "Game Paused, Press 'u' to Unpause", True, FONT_COLOR)
         textRect = text.get_rect()
-        textRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT  // 3)
+        textRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 3)
         SCREEN.blit(text, textRect)
         pygame.display.update()
 
@@ -272,12 +264,7 @@ def main():
         player.update(userInput)
 
         if len(obstacles) == 0:
-            if random.randint(0, 2) == 0:
-                obstacles.append(SmallCactus(SMALL_CACTUS))
-            elif random.randint(0, 2) == 1:
-                obstacles.append(LargeCactus(LARGE_CACTUS))
-            elif random.randint(0, 2) == 2:
-                obstacles.append(Bird(BIRD))
+            obstacles.append(Bird(BIRD))
 
         for obstacle in obstacles:
             obstacle.draw(SCREEN)
@@ -305,10 +292,10 @@ def menu(death_count):
     while run:
         current_time = datetime.datetime.now().hour
         if 7 < current_time < 19:
-            FONT_COLOR=(0,0,0)
+            FONT_COLOR = (0, 0, 0)
             SCREEN.fill((255, 255, 255))
         else:
-            FONT_COLOR=(255,255,255)
+            FONT_COLOR = (255, 255, 255)
             SCREEN.fill((128, 128, 128))
         font = pygame.font.Font("freesansbold.ttf", 30)
 
@@ -327,18 +314,21 @@ def menu(death_count):
                 score = (
                     f.read()
                 )  # Read all file in case values are not on a single line
-                score_ints = [int(x) for x in score.split()]  # Convert strings to ints
+                # Convert strings to ints
+                score_ints = [int(x) for x in score.split()]
             highscore = max(score_ints)  # sum all elements of the list
             hs_score_text = font.render(
                 "High Score : " + str(highscore), True, FONT_COLOR
             )
             hs_score_rect = hs_score_text.get_rect()
-            hs_score_rect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 100)
+            hs_score_rect.center = (
+                SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 100)
             SCREEN.blit(hs_score_text, hs_score_rect)
         textRect = text.get_rect()
         textRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
         SCREEN.blit(text, textRect)
-        SCREEN.blit(RUNNING[0], (SCREEN_WIDTH // 2 - 20, SCREEN_HEIGHT // 2 - 140))
+        SCREEN.blit(RUNNING[0], (SCREEN_WIDTH // 2 -
+                    20, SCREEN_HEIGHT // 2 - 140))
         pygame.display.update()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
