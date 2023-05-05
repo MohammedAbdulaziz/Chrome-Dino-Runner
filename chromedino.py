@@ -76,11 +76,12 @@ class Dinosaur:
         if self.step_index >= 10:
             self.step_index = 0
 
-        if (userInput[pygame.K_UP] or userInput[pygame.K_SPACE]) and not self.dino_jump:
+        if (len(obstacles) != 0 and (birdheight[0] == 290 or birdheight[0] == 320) and obstacles[0].inrange) and not self.dino_jump:
+            obstacles[0].inrange = False
             self.dino_duck = False
             self.dino_run = False
             self.dino_jump = True
-        elif userInput[pygame.K_DOWN] and not self.dino_jump:
+        elif (len(obstacles) != 0 and birdheight[0] == 250 and obstacles[0].inrange) and not self.dino_jump:
             self.dino_duck = True
             self.dino_run = False
             self.dino_jump = False
@@ -139,11 +140,16 @@ class Obstacle:
         self.type = type
         self.rect = self.image[self.type].get_rect()
         self.rect.x = SCREEN_WIDTH
+        self.inrange = False
 
     def update(self):
         self.rect.x -= game_speed
+        if self.rect.x < 300:
+            self.inrange = True
         if self.rect.x < -self.rect.width:
             obstacles.pop()
+            birdheight.pop()
+            self.inrange = False
 
     def draw(self, SCREEN):
         SCREEN.blit(self.image[self.type], self.rect)
@@ -152,10 +158,11 @@ class Obstacle:
 class Bird(Obstacle):
     BIRD_HEIGHTS = [250, 290, 320]
 
-    def __init__(self, image):
+    def __init__(self, image, birdheight):
         self.type = 0
         super().__init__(image, self.type)
         self.rect.y = random.choice(self.BIRD_HEIGHTS)
+        birdheight.append(self.rect.y)
         self.index = 0
 
     def draw(self, SCREEN):
@@ -166,7 +173,7 @@ class Bird(Obstacle):
 
 
 def main():
-    global game_speed, x_pos_bg, y_pos_bg, points, obstacles
+    global game_speed, x_pos_bg, y_pos_bg, points, obstacles, birdheight
     run = True
     clock = pygame.time.Clock()
     player = Dinosaur()
@@ -177,6 +184,7 @@ def main():
     points = 0
     font = pygame.font.Font("freesansbold.ttf", 20)
     obstacles = []
+    birdheight = []
     death_count = 0
     pause = False
 
@@ -250,7 +258,7 @@ def main():
         player.update(userInput)
 
         if len(obstacles) == 0:
-            obstacles.append(Bird(BIRD))
+            obstacles.append(Bird(BIRD, birdheight))
 
         for obstacle in obstacles:
             obstacle.draw(SCREEN)
